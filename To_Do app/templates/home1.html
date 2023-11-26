@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar bg-nav">
+        <a class="navbar-brand text-dark" href="#">To-Do App</a>
+
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+          </ul>
+    </nav>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="container my-4">
+        <form method="POST" action="/add" class="form-inline justify-content-center my-3">
+            <div class="form-group mx-sm-3">
+               
+                <input type="text" class="form-control" name="Task" placeholder="Task:Enter a task here" required><br><br>
+                
+                <input type="text" class="form-control" name="Assignee" placeholder="Enter a Assignee here" required><br><br>
+                
+                <input type="text" class="form-control" name="Notes" placeholder="Enter a Notes here" required><br>
+                
+                <select title="Status" class="form-control" placeholder="select" type="text" name="Status" required>
+                    <option value="In progress">In progress</option>
+                    <option value="Completed">Completed</option>
+                    </select><br>
+            </div><br><br>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+        <table class="table">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Assignee</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task['Task'] }}</td>
+            <td>{{ task['Assignee'] }}</td>
+            <td>{{ task['Notes'] }}</td>
+            <td>{{ task['Status'] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('update', id=task['id']) }}">
+                    <input type="hidden" name="id" value="{{ task['id'] }}">
+                    <div class="form-group">
+                        <input type="text" name="new_Task" class="form-control" placeholder="Update Task">
+                    
+                        <input type="text" name="new_Assignee" class="form-control" placeholder="Update Assignee">
+                    
+                        <input type="text" name="new_Note" class="form-control" placeholder="Update Notes">
+                    
+                    
+                        <input type="text" name="new_Status" class="form-control" placeholder="Update status">
+                    </div>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </form>
+                <a href="/delete/{{ task['id'] }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    </div>
+</body>
+</html>
